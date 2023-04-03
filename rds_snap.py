@@ -28,8 +28,9 @@ def create_rds_snapshots(instance_names):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create RDS snapshots')
-    parser.add_argument('-db','--db_instance', metavar='db-instance', type=str, nargs='+',
-                        help='a list of RDS instance names')
+    parser.add_argument('-db','--db_instances', metavar='db-instances', type=str,
+                        help='a comma-separated list of RDS instance names')
     args = parser.parse_args()
 
-    create_rds_snapshots(args.db_instance)
+    instance_names = [name.strip() for name in args.db_instances.split(',')]
+    create_rds_snapshots(instance_names)
