@@ -1,18 +1,15 @@
 pipeline {
   agent any
   
-parameters {
-        extendedChoice(name: 'rds', 
-                       type: 'PT_CHECKBOX', 
-                       description: 'Select your database instance',
-                       multiSelectDelimiter: ',',
-                       quoteValue: false,
-                       valueSeparator: ',',
-                       visibleItemCount: 3,
-                       defaultValue: 'apple,orange',
-                       groovyScript: '''
-                            return ["database-1", "database-2", "database-3", "database-4", "database-5"]
-                        '''
+    parameters {
+        extendedChoice(name: 'RDS_INSTANCE', 
+                        description: 'Check the Instance you need to snapshot',
+                        type: 'PT_CHECKBOX',
+                        value: '',
+                        multiSelectDelimiter: ',',
+                        groovyScript: """
+                            return ['dev', 'qa', 'prod']
+                        """
         )
     }
 
@@ -27,7 +24,7 @@ parameters {
     
     stage('Snapshot') {
       steps {
-        python3 rds_snapshot.py -db {name.choices}
+        python3 rds_snapshot.py -db $RDS_INSTANCE
         // Add your build steps here
       }
     }
