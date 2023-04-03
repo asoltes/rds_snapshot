@@ -19,7 +19,7 @@ pipeline {
     
     stage('Snapshot') {
       steps {
-        python3 rds_snapshot.py -db {param.}
+        python3 rds_snapshot.py -db {name.choices}
         // Add your build steps here
       }
     }
