@@ -17,12 +17,12 @@ pipeline {
     )
   }
 
-  stages {
-    stage('Clone Repository') {
-      steps {
-        git url: 'https://github.com/asoltes/rds_snapshot.git'
-      }
-    }
+  // stages {
+  //   stage('Clone Repository') {
+  //     steps {
+  //       git url: 'https://github.com/asoltes/rds_snapshot.git'
+  //     }
+  //   }
     
     stage('Snapshot') {
       steps {
