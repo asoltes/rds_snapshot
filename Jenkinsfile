@@ -8,7 +8,7 @@ pipeline {
                     value: '',
                     multiSelectDelimiter: ',',
                     groovyScript: """
-                      return ['database-1', 'dataabse-2', 'database-3', database-4]
+                      return ['database-1', 'database-2', 'database-3', 'database-4']
                     """
     )
   }
