@@ -1,6 +1,7 @@
 import boto3
 import time
 import argparse
+import sys
 import concurrent.futures
 
 
@@ -24,6 +25,7 @@ def create_rds_snapshots(instance_names):
                 print(f"Snapshot {snapshot_id} is now available")
             except Exception as e:
                 print(f"Error occurred while creating snapshot: {e}")
+                sys.exit(1)
 
 
 if __name__ == '__main__':
