@@ -17,13 +17,7 @@ pipeline {
     )
   }
 
-  // stages {
-  //   stage('Clone Repository') {
-  //     steps {
-  //       git url: 'https://github.com/asoltes/rds_snapshot.git'
-  //     }
-  //   }
-    
+  stages {
     stage('Snapshot') {
       steps {
         sh "python3 rds_snapshot.py -db $RDS_INSTANCE"
