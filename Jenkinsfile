@@ -16,9 +16,11 @@ pipeline {
   stages {
     stage('Snapshot') {
       steps {
-        sh "pip install boto3"
-        sh "python3 rds_snap.py -db $RDS_INSTANCE"
-        // Add your build steps here
+        withCredentials([awsAccessKeyId(credentialsId: 'aws-credentials', variable: 'AWS_ACCESS_KEY_ID'),
+                          awsSecretKey(credentialsId: 'aws-credentials', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+          sh "pip install boto3"
+          sh "python3 rds_snap.py -db $RDS_INSTANCE"
+        }
       }
     }
     
