@@ -1,5 +1,12 @@
 pipeline {
   agent any
+  parameters {
+    select(
+        name: 'REGION',
+        choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
+        description: 'Select the Region of RDS.'
+    )
+}
   
   parameters {
     extendedChoice(name: 'RDS_INSTANCE', 
@@ -12,11 +19,12 @@ pipeline {
                     """
     )
   }
+
   stages {
     stage('Snapshot') {
       steps {
         sh "pip install boto3"
-        sh "python3 rds_snap.py -db $RDS_INSTANCE"
+        sh "python3 rds_snap.py --db_instances $RDS_INSTANCE --region $REGION"
       }
     }
     
