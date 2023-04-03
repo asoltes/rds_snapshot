@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3
+FROM devopsjourney1/myjenkinsagents:python
 
 # Set the working directory to /app
 WORKDIR /app

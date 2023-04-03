@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'docker_aws_boto3'
+            label 'docker-agent-python'
         }
     }
   
