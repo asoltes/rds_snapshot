@@ -1,7 +1,7 @@
 pipeline {
   agent any
   parameters {
-    select(
+    choice(
       name: 'REGION',
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
       description: 'Select the Region of RDS.'
