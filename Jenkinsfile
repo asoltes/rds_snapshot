@@ -20,7 +20,7 @@ pipeline {
   stages {
     stage('Snapshot') {
       steps {
-        sh "python3 rds_snapshot.py -db $RDS_INSTANCE"
+        sh "python3 rds_snap.py -db $RDS_INSTANCE"
         // Add your build steps here
       }
     }
