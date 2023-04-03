@@ -12,7 +12,6 @@ pipeline {
                     """
     )
   }
-
   stages {
     stage('Snapshot') {
       steps {
