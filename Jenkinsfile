@@ -2,21 +2,20 @@ pipeline {
   agent any
   parameters {
     select(
-        name: 'REGION',
-        choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
-        description: 'Select the Region of RDS.'
+      name: 'REGION',
+      choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
+      description: 'Select the Region of RDS.'
     )
-}
-  
-  parameters {
-    extendedChoice(name: 'RDS_INSTANCE', 
-                    description: 'Check the Instance you need to snapshot',
-                    type: 'PT_CHECKBOX',
-                    value: '',
-                    multiSelectDelimiter: ',',
-                    groovyScript: """
-                      return ['database-1', 'database-2', 'database-3', 'database-4']
-                    """
+
+    extendedChoice(
+      name: 'RDS_INSTANCE',
+      description: 'Check the Instance you need to snapshot',
+      type: 'PT_CHECKBOX',
+      value: '',
+      multiSelectDelimiter: ',',
+      groovyScript: """
+        return ['database-1', 'database-2', 'database-3', 'database-4']
+      """
     )
   }
 
@@ -27,7 +26,7 @@ pipeline {
         sh "python3 rds_snap.py --db_instances $RDS_INSTANCE --region $REGION"
       }
     }
-    
+
     // Add more stages as needed
   }
 }
