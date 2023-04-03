@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+    agent {
+        node {
+            label 'docker-agent-python'
+        }
+    }
   
   parameters {
     extendedChoice(name: 'RDS_INSTANCE', 
