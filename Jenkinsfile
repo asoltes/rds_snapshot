@@ -18,7 +18,6 @@ pipeline {
       steps {
         sh "pip install boto3"
         sh "python3 rds_snap.py -db $RDS_INSTANCE"
-        // Add your build steps here
       }
     }
     
