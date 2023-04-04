@@ -6,24 +6,26 @@ pipeline {
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
       description: 'Select the Region of RDS.'
     )
-
-    extendedChoice(
-      name: 'RDS_INSTANCE',
-      description: 'Check the Instance you need to snapshot',
-      type: 'PT_CHECKBOX',
-      value: '',
-      multiSelectDelimiter: ',',
-      groovyScript: """
-        return ['database-1', 'database-2', 'database-3', 'database-4']
-      """
-    )
   }
 
   stages {
-    stage('Snapshot') {
+    stage('Prompt User') {
       steps {
-        sh "pip install boto3"
-        sh "python3 rds_snap.py --db_instances $RDS_INSTANCE --region $REGION"
+        script {
+          def userInput = input(
+            id: 'userInput',
+            message: 'Select the databases to snapshot:',
+            parameters: [
+              [$class: 'MultiSelectionParameterDefinition', 
+               name: 'DB_INSTANCES',
+               choices: ['database-1', 'database-2', 'database-3'],
+               description: 'Select one or more databases to snapshot.']
+            ]
+          )
+
+          sh "pip install boto3"
+          sh "python3 rds_snap.py --db_instances ${userInput.DB_INSTANCES.join(',')} --region ${params.REGION}"
+        }
       }
     }
 
