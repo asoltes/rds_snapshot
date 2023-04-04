@@ -13,7 +13,7 @@ pipeline {
       multiSelectDelimiter: ',',
       type: 'PT_CHECKBOX',
       groovyScript: """
-        return ['database-1,database-2']
+        return ['database-1','database-2','database-3']
       """
     )
   }
