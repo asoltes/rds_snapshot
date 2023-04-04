@@ -16,7 +16,7 @@ pipeline {
       name: 'RDS_REGION',
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
       defaultValue: '{{ default_region }}',
-      description: 'Select the Region of RDS.'
+      description: 'Select the Region of RDS - AWS Account: {{ aws_account_number }}'
     )
 
     extendedChoice(
