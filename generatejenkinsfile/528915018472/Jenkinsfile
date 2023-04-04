@@ -13,8 +13,8 @@ pipeline {
       multiSelectDelimiter: ',',
       type: 'PT_CHECKBOX',
       groovyScript: """
-        return ['ltfdemoaurora-1', 'ltfdevaurora-1', 'ltfdevaurora-2', 'ltfqaaurora-1', 'ltfrbcaurora-1', 'wicdemoaurora-1', 'wicdevaurora-1', 'wicqaaurora-1']
-      """
+        return ['database-1', 'database-2']
+      """'
     )
   }
 
@@ -26,7 +26,7 @@ pipeline {
     stage('RDS Snapshot') {
       steps {
         script {
-          withAWS(credentials:'labs-wic-epic-lower-aws-account-num') {
+          withAWS(credentials:'aws-credentials') {
             sh "cd rds_snapshot/"
             sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }

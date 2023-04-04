@@ -13,7 +13,7 @@ pipeline {
       multiSelectDelimiter: ',',
       type: 'PT_CHECKBOX',
       groovyScript: """
-        return ['hubinternalaurora-1']
+        return ['database-1']
       """
     )
   }
@@ -26,7 +26,7 @@ pipeline {
     stage('RDS Snapshot') {
       steps {
         script {
-          withAWS(credentials:'epicmirror-lower-aws-account-num') {
+          withAWS(credentials:'aws-credentials') {
             sh "cd rds_snapshot/"
             sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
