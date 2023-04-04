@@ -23,6 +23,14 @@ pipeline {
             ]
           )
 
+          withAWS(roleAccount:"${AWS_ACCOUNT_NUMBER}", role:"${ASSUME_IAM_ROLE_NAME}", region:"${params.REGION}") {
+            // Get AWS Account Number substring of last 4 characters
+            def awsAccountNumberShortened = sh (
+              script: "aws sts get-caller-identity --query 'Account'",
+              returnStdout: true
+            ).trim().substring(0,4)
+          }
+
           sh "pip install boto3"
           sh "python3 rds_snap.py --db_instances ${userInput.DB_INSTANCES.join(',')} --region ${params.REGION}"
         }
