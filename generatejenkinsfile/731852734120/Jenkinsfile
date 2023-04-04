@@ -2,7 +2,7 @@ pipeline {
   agent any
   parameters {
     choice(
-      name: 'REGION',
+      name: 'RDS_REGION',
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
       description: 'Select the Region of RDS.'
     )
@@ -13,7 +13,7 @@ pipeline {
       multiSelectDelimiter: ',',
       type: 'PT_CHECKBOX',
       groovyScript: """
-        return ['database-1']
+        return ['hubinternalaurora-1']
       """
     )
   }
@@ -26,7 +26,7 @@ pipeline {
     stage('RDS Snapshot') {
       steps {
         script {
-          withAWS(credentials:'aws-credentials') {
+          withAWS(credentials: 'epicmirror-lower-aws-account-num' ) {
             sh "cd rds_snapshot/"
             sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
@@ -38,4 +38,3 @@ pipeline {
     // Add more stages as needed
   }
 }
-
