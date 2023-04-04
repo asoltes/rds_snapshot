@@ -1,9 +1,12 @@
 {%- if aws_account_number =="528915018472" -%}
     {% set aws_authentication = "labs-wic-epic-lower-aws-account-num" %}
+    {% set default_region = "ap-southeast-1" %}
 {%- elif aws_account_number =="731852734120" -%}
     {% set aws_authentication = "epicmirror-lower-aws-account-num" %}
+    {% set default_region = "ap-southeast-1" %}
 {%- elif aws_account_number == "885239713196" -%}
     {% set aws_authentication = "aws-credentials" %}
+    {% set default_region = "us-east-1" %}
 {%- endif -%}
 
 pipeline {
@@ -12,6 +15,7 @@ pipeline {
     choice(
       name: 'RDS_REGION',
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
+      defaultValue: '{{ default_region }}',
       description: 'Select the Region of RDS.'
     )
 
