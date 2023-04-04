@@ -27,7 +27,7 @@ pipeline {
       steps {
         script {
           withAWS(credentials: 'epicmirror-lower-aws-account-num' ) {
-            sh "cd rds_snapshot/"
+            sh "echo rds database snapshot in progress please wait..."
             sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
  

@@ -27,8 +27,7 @@ pipeline {
       steps {
         script {
           withAWS(credentials:'aws-credentials') {
-            sh "cd rds_snapshot"
-            sh "ls -l"
+            sh "echo rds database snapshot in progress please wait..."
             sh "python3 rds_snapshot/rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
  
