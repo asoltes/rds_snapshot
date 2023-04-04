@@ -1,0 +1,41 @@
+pipeline {
+  agent any
+  parameters {
+    choice(
+      name: 'REGION',
+      choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
+      description: 'Select the Region of RDS.'
+    )
+
+    extendedChoice(
+      name: 'RDS_INSTANCE',
+      description: 'Check the Instance you need to snapshot',
+      multiSelectDelimiter: ',',
+      type: 'PT_CHECKBOX',
+      groovyScript: """
+        return ['database-1']
+      """
+    )
+  }
+
+  environment {
+    ASSUME_IAM_ROLE_NAME  = "rds-snapshot-iam-role"
+  }
+
+  stages {
+    stage('RDS Snapshot') {
+      steps {
+        script {
+          withAWS(credentials:'aws-credentials') {
+            sh "cd rds_snapshot/"
+            sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
+          }
+ 
+        }
+      }
+    }
+
+    // Add more stages as needed
+  }
+}
+
