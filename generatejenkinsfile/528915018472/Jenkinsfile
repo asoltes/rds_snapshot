@@ -1,10 +1,12 @@
+
 pipeline {
   agent any
   parameters {
     choice(
       name: 'RDS_REGION',
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
-      description: 'Select the Region of RDS.'
+      defaultValue: 'ap-southeast-1',
+      description: 'Select the Region of RDS - AWS Account: 528915018472'
     )
 
     extendedChoice(
@@ -28,7 +30,7 @@ pipeline {
         script {
           withAWS(credentials: 'labs-wic-epic-lower-aws-account-num' ) {
             sh "echo rds database snapshot in progress please wait..."
-            sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
+            sh "python3 rds/snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
  
         }

@@ -1,5 +1,5 @@
 {%- if aws_account_number =="528915018472" -%}
-    {% set aws_authentication = "labs-wic-epic-lower-aws-account-num" %}
+    {%- set aws_authentication = "labs-wic-epic-lower-aws-account-num" -%}
     {% set default_region = "ap-southeast-1" %}
 {%- elif aws_account_number =="731852734120" -%}
     {% set aws_authentication = "epicmirror-lower-aws-account-num" %}
@@ -7,8 +7,7 @@
 {%- elif aws_account_number == "885239713196" -%}
     {% set aws_authentication = "aws-credentials" %}
     {% set default_region = "us-east-1" %}
-{%- endif -%}
-
+{%- endif %}
 pipeline {
   agent any
   parameters {
@@ -40,7 +39,7 @@ pipeline {
         script {
           withAWS(credentials: '{{ aws_authentication }}' ) {
             sh "echo rds database snapshot in progress please wait..."
-            sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
+            sh "python3 rds/snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
  
         }
