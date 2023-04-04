@@ -13,26 +13,24 @@ pipeline {
       multiSelectDelimiter: ',',
       type: 'PT_CHECKBOX',
       groovyScript: """
-        return ['database-1', 'database-2']
+        return ['hubinternalaurora-1']
       """
     )
+  }
+
+  environment {
+    ASSUME_IAM_ROLE_NAME  = "rds-snapshot-iam-role"
   }
 
   stages {
     stage('RDS Snapshot') {
       steps {
         script {
-          withAWS(roleAccount:"${AWS_ACCOUNT_NUMBER}", role:"${ASSUME_IAM_ROLE_NAME}", region:"${REGION}") {
-            // Get AWS Account Number substring of last 4 characters
-            def awsAccountNumberShortened = sh (
-              script: "aws sts get-caller-identity --query 'Account'",
-              returnStdout: true
-            ).trim().substring(0,4)
+          withAWS(credentials:'epicmirror-lower-aws-account-num') {
+            sh "cd rds_snapshot/"
+            sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
           }
-
-          sh "pip install boto3"
-          sh "cd rds_snapshot"
-          sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $REGION"
+ 
         }
       }
     }
@@ -40,3 +38,4 @@ pipeline {
     // Add more stages as needed
   }
 }
+

@@ -1,6 +1,7 @@
 import boto3
 from jinja2 import Environment, FileSystemLoader
 import os
+import argparse
 
 def create_directory_if_not_exists(directory):
     if not os.path.exists(directory):
@@ -14,9 +15,8 @@ def get_aws_account_number():
     account_id = sts_client.get_caller_identity()['Account']
     return account_id
 
-
 def get_rds_instance_names():
-    rds_client = boto3.client('rds', region_name='us-east-1')
+    rds_client = boto3.client('rds', region_name=args.region)
     response = rds_client.describe_db_instances()
     instance_names = [instance['DBInstanceIdentifier'] for instance in response['DBInstances']]
     print (instance_names)
@@ -30,13 +30,15 @@ def render_groovy_template(instance_names):
     return output
 
 def save_groovy_script(output):
-
     with open(f'{directory_name}/Jenkinsfile', 'w') as file:
         file.write(output)
 
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Generate RDS snapshot Jenkinsfile')
+    parser.add_argument('-r', '--region', metavar='region', type=str, help='specify the rds region')
+    args = parser.parse_args()
     directory_name = get_aws_account_number()
     create_directory_if_not_exists(directory_name)
     instance_names = get_rds_instance_names()
