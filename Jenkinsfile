@@ -6,24 +6,23 @@ pipeline {
       choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
       description: 'Select the Region of RDS.'
     )
+
+    extendedChoice(
+      name: 'RDS_INSTANCE',
+      description: 'Check the Instance you need to snapshot',
+      multiSelectDelimiter: ',',
+      type: 'PT_CHECKBOX',
+      groovyScript: """
+        return ['database-1', 'database-2']
+      """
+    )
   }
 
   stages {
-    stage('Prompt User') {
+    stage('RDS Snapshot') {
       steps {
         script {
-          def userInput = input(
-            id: 'userInput',
-            message: 'Select the databases to snapshot:',
-            parameters: [
-              [$class: 'MultiSelectionParameterDefinition', 
-               name: 'DB_INSTANCES',
-               choices: ['database-1', 'database-2', 'database-3'],
-               description: 'Select one or more databases to snapshot.']
-            ]
-          )
-
-          withAWS(roleAccount:"${AWS_ACCOUNT_NUMBER}", role:"${ASSUME_IAM_ROLE_NAME}", region:"${params.REGION}") {
+          withAWS(roleAccount:"${AWS_ACCOUNT_NUMBER}", role:"${ASSUME_IAM_ROLE_NAME}", region:"${REGION}") {
             // Get AWS Account Number substring of last 4 characters
             def awsAccountNumberShortened = sh (
               script: "aws sts get-caller-identity --query 'Account'",
@@ -32,7 +31,7 @@ pipeline {
           }
 
           sh "pip install boto3"
-          sh "python3 rds_snap.py --db_instances ${userInput.DB_INSTANCES.join(',')} --region ${params.REGION}"
+          sh "python3 rds_snap.py --db_instances $RDS_INSTANCE --region $REGION"
         }
       }
     }
