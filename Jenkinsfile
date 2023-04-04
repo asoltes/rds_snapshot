@@ -31,7 +31,8 @@ pipeline {
           }
 
           sh "pip install boto3"
-          sh "python3 rds_snap.py --db_instances $RDS_INSTANCE --region $REGION"
+          sh "cd rds_snapshot"
+          sh "python3 rds_snapshot.py --db_instances $RDS_INSTANCE --region $REGION"
         }
       }
     }
