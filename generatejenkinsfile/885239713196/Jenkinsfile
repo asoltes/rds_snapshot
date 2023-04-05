@@ -23,6 +23,14 @@ pipeline {
   }
 
   stages {
+
+    stage('Checkout SCM From the pipeline') {
+      steps {
+        cleanWs()
+        checkout([$class: 'GitSCM', branches: [[name: 'my-branch']],url: 'git@bitbucket.org:etsprojects/loans-sre-pipelines.git'])
+      }
+    }
+
     stage('RDS Snapshot') {
       steps {
         script {

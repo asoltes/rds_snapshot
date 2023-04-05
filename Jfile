@@ -1,0 +1,76 @@
+{%- if aws_account_number =="528915018472" -%}
+    {%- set aws_authentication = "labs-wic-epic-lower-aws-account-num" -%}
+    {% set default_region = "ap-southeast-1" %}
+{%- elif aws_account_number =="731852734120" -%}
+    {% set aws_authentication = "epicmirror-lower-aws-account-num" %}
+    {% set default_region = "ap-southeast-1" %}
+{%- elif aws_account_number == "885239713196" -%}
+    {% set aws_authentication = "aws-credentials" %}
+    {% set default_region = "us-east-1" %}
+{%- endif %}
+pipeline {
+  agent any
+  parameters {
+    choice(
+      name: 'RDS_REGION',
+      choices: ['us-east-1', 'us-east-2', 'ap-southeast-1', 'ap-southeast-2'],
+      defaultValue: '{{ default_region }}',
+      description: 'Select the Region of RDS - AWS Account: {{ aws_account_number }}'
+    )
+
+    extendedChoice(
+      name: 'RDS_INSTANCE',
+      description: 'Check the Instance you need to snapshot',
+      multiSelectDelimiter: ',',
+      type: 'PT_CHECKBOX',
+      groovyScript: """
+        return {{ instance_names }}
+      """
+    )
+  }
+
+  environment {
+    ASSUME_IAM_ROLE_NAME  = "rds-snapshot-iam-role"
+    IAC_RUNNER_IMAGE_VERSION = "1.0.1"
+  }
+
+  stages {
+
+    stage('Checkout SCM') {
+            agent {
+                docker {
+                    image "etradingsoftware-loans-docker-local.jfrog.io/iac-runner:${IAC_RUNNER_IMAGE_VERSION}"
+                    reuseNode true
+                    registryUrl 'https://etradingsoftware-loans-docker-local.jfrog.io'
+                    registryCredentialsId 'jenkins-jfrog-credentials'
+                }
+            }
+            steps {
+                cleanWs()
+                checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '${TERRAFORM_BRANCH}']], extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'terraform']],, userRemoteConfigs: [[credentialsId: 'loans-bot-bitbucket', url: 'git@bitbucket.org:etsprojects/loans-sre-pipelines.git']]]
+                
+        }
+
+    stage('RDS Snapshot') {
+        agent {
+                docker {
+                    image "etradingsoftware-loans-docker-local.jfrog.io/iac-runner:${IAC_RUNNER_IMAGE_VERSION}"
+                    reuseNode true
+                    registryUrl 'https://etradingsoftware-loans-docker-local.jfrog.io'
+                    registryCredentialsId 'jenkins-jfrog-credentials'
+                }
+            }
+        steps {
+          script {
+          withAWS(credentials: '{{ aws_authentication }}' ) {
+            sh "echo rds database snapshot in progress please wait..."
+            sh "python3 rds/snapshot.py --db_instances $RDS_INSTANCE --region $RDS_REGION"
+          }
+ 
+        }
+      }
+    }
+
+    // Add more stages as needed
+  }
+}
