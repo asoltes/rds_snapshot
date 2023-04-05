@@ -27,7 +27,7 @@ pipeline {
     stage('Checkout SCM From the pipeline') {
       steps {
         cleanWs()
-        checkout([$class: 'GitSCM', branches: [[name: 'main']],url: 'git@bitbucket.org:etsprojects/loans-sre-pipelines.git'])
+        checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/asoltes/rds_snapshot.git']]])
       }
     }
 
